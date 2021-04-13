@@ -15,27 +15,42 @@ namespace SubscriptionMicroservice.Controllers
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
+        public SubscriptionController()
+        {
+            _log4net = log4net.LogManager.GetLogger(typeof(SubscriptionController));
+        }
+
+        readonly log4net.ILog _log4net;
         // GET: api/<SubscriptionController>
         [HttpGet]
         public IEnumerable<SubscriptionDetails> Get()
         {
-            SubscriptionRepository sr = new SubscriptionRepository();
-            return sr.ViewSubscriptions();
+            using (SubscriptionRepository subscriptionRepo = new SubscriptionRepository())
+            {
+                return subscriptionRepo.ViewSubscriptions();
+            }
+                
         }
 
         // GET api/<SubscriptionController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            SubscriptionRepository sr = new SubscriptionRepository();
-            SubscriptionDetails subscription = sr.GetSubscriptionByID(id);
-            if (subscription != null)
+            SubscriptionDetails subscription;
+            using (SubscriptionRepository subscriptionRepo = new SubscriptionRepository())
             {
-                return StatusCode(StatusCodes.Status200OK, subscription);
-            }
-            else
-            {
-                return BadRequest();
+                try
+                {
+                    subscription = subscriptionRepo.GetSubscriptionByID(id);
+                    if(subscription != null)
+                        return StatusCode(StatusCodes.Status200OK, subscription);
+                    return StatusCode(StatusCodes.Status404NotFound, "No subscription found!");
+                }
+                catch(Exception e)
+                {
+                    _log4net.Error($"{e} : {e.Message}");
+                    return BadRequest();
+                }
             }
         }
 
@@ -43,9 +58,19 @@ namespace SubscriptionMicroservice.Controllers
         [HttpPost]
         public IActionResult Post(SubscriptionDetails subscription)
         {
-            SubscriptionRepository sr = new SubscriptionRepository();
-            string status = sr.AddSubscription(subscription);
-            return Ok(status);
+            using (SubscriptionRepository subscriptionRepo = new SubscriptionRepository())
+            {
+                try
+                {
+                    string status = subscriptionRepo.AddSubscription(subscription);
+                    return Ok(status);
+                }
+                catch(Exception e)
+                {
+                    _log4net.Error($"{e} : {e.Message}");
+                    return BadRequest();
+                }
+            }    
         }
 
         // PUT api/<SubscriptionController>/5
@@ -58,18 +83,19 @@ namespace SubscriptionMicroservice.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            SubscriptionRepository sr = new SubscriptionRepository();
-            //try 
-            //{
-            //    string status = sr.RemoveSubscription(id);
-            //    return Ok(status);
-            //}
-            //catch(Exception)
-            //{
-            //    return BadRequest();
-            //}
-            string status = sr.RemoveSubscription(id);
-            return Ok(status);
+            using (SubscriptionRepository subscriptionRepo = new SubscriptionRepository())
+            {
+                try
+                {
+                    string status = subscriptionRepo.RemoveSubscription(id);
+                    return Ok(status);
+                }
+                catch (Exception e)
+                {
+                    _log4net.Error($"{e} : {e.Message}");
+                    return BadRequest();
+                }
+            }
         }
     }
 }
