@@ -34,7 +34,7 @@ namespace SubscriptionMicroservice
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -42,7 +42,7 @@ namespace SubscriptionMicroservice
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SubscriptionMicroservice v1"));
             }
-
+            loggerFactory.AddLog4Net();
             app.UseRouting();
 
             app.UseAuthorization();
