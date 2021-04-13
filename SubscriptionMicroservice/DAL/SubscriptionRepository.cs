@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SubscriptionMicroservice.DAL
 {
-    public class SubscriptionRepository : ISubscriptionRepository
+    public class SubscriptionRepository : ISubscriptionRepository, IDisposable
     {
 
         //subscription list
@@ -49,33 +49,22 @@ namespace SubscriptionMicroservice.DAL
             }
         };
 
-        private async Task<Boolean> DrugAvailable(SubscriptionDetails subscription)
+        /// <summary>This method returns the subscription details based on the id</summary>
+        /// <param name="sub_id">the id of the subscription which is to be searched for</param>
+        public dynamic GetSubscriptionByID(int sub_id)
         {
-            Drug drug = new Drug();
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync("http://localhost:7001/api/Drugs/GetDrugByName/" + subscription.DrugName))
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    drug = JsonConvert.DeserializeObject<Drug>(apiResponse);
-                }
-            }
-            return (drug.LocQty.ContainsKey(subscription.Location)) && (subscription.Quantity <= drug.LocQty[subscription.Location]);
-        }
-
-        public dynamic GetSubscriptionByID(int Sub_id)
-        {
-            var item = subscriptionList.Where(x => x.SubscriptionID == Sub_id).FirstOrDefault();
-            if (item == null)
-                return null;
+            var item = subscriptionList.Where(x => x.SubscriptionID == sub_id).FirstOrDefault();
             return item;
         }
 
+        /// <summary>This method returns all the existing subscriptions</summary>
         public IEnumerable<SubscriptionDetails> ViewSubscriptions()
         {
             return subscriptionList;
         }
 
+        /// <summary>This method adds a new subscription to the subscription list</summary>
+        /// <param name="sub_id">an instance of the SubscriptionDetails class which is to be added to the subscription list</param>
         public string AddSubscription(SubscriptionDetails subscription)
         {
             if (DrugAvailable(subscription).Result)
@@ -87,6 +76,10 @@ namespace SubscriptionMicroservice.DAL
             return "Sorry, the requested drug is not available at this location";
         }
 
+
+        /// <summary>This method checks whether the payment dues are cleared for a particular subscription.
+        ///This method also calls the api of RefillMicroservice to get the refill details</summary>
+        /// <param name="subscription">The id of the subscription whose payment status is to be verified.</param>
         private async Task<Boolean> CheckPaymentStatus(int sub_id)
         {
             RefillDetails refill = new RefillDetails();
@@ -100,16 +93,24 @@ namespace SubscriptionMicroservice.DAL
             }
             return String.Compare(refill.Status, "clear", StringComparison.OrdinalIgnoreCase) == 0;
         }
-        public string RemoveSubscription(int sub_id) 
+
+        /// <summary>This method removes an existing subscription from the subscription list</summary>
+        /// <param name="sub_id">an instance of the SubscriptionDetails class which is to be removed from the subscription list</param>
+        public string RemoveSubscription(int sub_id)
         {
             if (CheckPaymentStatus(sub_id).Result)
             {
                 var sub = subscriptionList.Where(s => s.SubscriptionID == sub_id).FirstOrDefault();
-                if(sub != null)
+                if (sub != null)
                     subscriptionList.Remove(sub);
                 return "Unsubscribed successfully";
             }
             return "Sorry! Clear your dues to unsubscribe";
+        }
+
+        public void Dispose()
+        {
+            GC.Collect();
         }
     }
 }
