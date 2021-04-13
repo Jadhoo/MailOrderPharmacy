@@ -63,6 +63,24 @@ namespace SubscriptionMicroservice.DAL
             return subscriptionList;
         }
 
+        /// <summary>This method checks whether the given drug is available in a particular location.
+        ///This method calls the api of DrugMicroservice to get the Drug details</summary>
+        /// <param name="subscription">an instance of the SubscriptionDetails class which includes details like 
+        /// quantity and location of the required drug.</param>
+        private async Task<Boolean> DrugAvailable(SubscriptionDetails subscription)
+        {
+            Drug drug = new Drug();
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync("http://localhost:7001/api/Drugs/GetDrugByName/" + subscription.DrugName))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    drug = JsonConvert.DeserializeObject<Drug>(apiResponse);
+                }
+            }
+            return (drug.LocQty.ContainsKey(subscription.Location)) && (subscription.Quantity <= drug.LocQty[subscription.Location]);
+        }
+
         /// <summary>This method adds a new subscription to the subscription list</summary>
         /// <param name="sub_id">an instance of the SubscriptionDetails class which is to be added to the subscription list</param>
         public string AddSubscription(SubscriptionDetails subscription)
