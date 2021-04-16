@@ -1,0 +1,67 @@
+﻿@model IEnumerable<LoginPortal.Models.Subscription>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Existing Subscriptions</h1>
+
+<p>
+    <a asp-action="AddSubscription">Add New Subscription</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.DrugName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefillOccurance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NoOfRefills)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InsuranceId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DrugName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RefillOccurance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NoOfRefills)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InsuranceId)
+                </td>
+                <td>
+
+                    @Html.ActionLink("Refill Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Unsubscribe", "RemoveSubscription", new { id = item.SubscriptionID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

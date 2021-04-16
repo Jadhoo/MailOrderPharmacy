@@ -405,3 +405,6 @@ C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debu
 C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debug\net5.0\Razor\Views\Member\Index.cshtml.g.cs
 C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debug\net5.0\Razor\Views\Drug\Index.cshtml.g.cs
 C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debug\net5.0\Razor\Views\Drug\SearchDrug.cshtml.g.cs
+C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debug\net5.0\Razor\Views\Subscription\Index.cshtml.g.cs
+C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debug\net5.0\Razor\Views\Subscription\AddSubscription.cshtml.g.cs
+C:\Users\user\Desktop\Mentor\MailOrderPharmacy1\LoginPortal\LoginPortal\obj\Debug\net5.0\Razor\Views\Subscription\RemoveSubscription.cshtml.g.cs
