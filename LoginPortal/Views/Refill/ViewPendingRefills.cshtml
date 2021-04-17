@@ -1,0 +1,52 @@
+﻿@model IEnumerable<LoginPortal.Models.RefillDetails>
+
+@{
+    ViewData["Title"] = "ViewPendingRefills";
+}
+
+<h1>Pending Refills</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DrugName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RefillOccurnace)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    if (item.Status == "pending")
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DrugName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RefillOccurnace)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "RefillDetails", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-info" })
+            </td>
+        </tr>
+    }
+}
+    </tbody>
+</table>
